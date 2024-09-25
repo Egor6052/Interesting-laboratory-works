@@ -3,13 +3,24 @@
 #include "../lib/Controller1.h"
 
 Controller1::Controller1() {
-    name = "Controler 1";
+    this->name = "Controler 1";
+    this->response = 0;
 }
 
 Controller1::~Controller1() {}
 
 void Controller1::processSignal(int signal) {
     std::cout << "Controller1 обробляє сигнал: " << signal << std::endl;
+    if (signal <= 0){
+    	std::cout << "Кнопка не нажата!" << std::endl;
+    	this->response = 0;
+    } if (signal > 24){
+    	std::cout << "Занадто високий рівень напруги! Можливо аварія!" << std::endl;
+    	this->response = 0;
+    } else {
+    	this->response = 1;
+    	std::cout << "Кнопка нажата!" << std::endl;
+    }
 }
 
 void Controller1::receiveFromController2(int signal) {
@@ -18,8 +29,10 @@ void Controller1::receiveFromController2(int signal) {
 }
 
 int Controller1::sendToController2() {
-    int response = 42; // Повертаємо ціле число
+
+    // this->response = signal;
     std::cout << "Controller1 відправляє сигнал до Controller2: " << response << std::endl;
+    std::cout << "Передача сигналу на Контролер2...\n" << std::endl;
     return response;
 }
 

@@ -10,13 +10,16 @@
 
 
 class SensorPanel {
-private:
-	int signal;
+	private:
+		int signal;
 
-public:
-    void pressButton(Controller2& controller2, Controller1& controller1);
+	public:
 
-    void blinkLight();
+		SensorPanel();
+		~SensorPanel();
+
+	    void pressButton(Controller2& controller2, Controller1& controller1);
+	    void blinkLight(int signalFromControler2);
 };
 
 #endif

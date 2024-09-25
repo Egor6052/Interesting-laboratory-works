@@ -4,17 +4,18 @@
 #include <string>
 
 class Controller1 {
-public:
-    Controller1();
-    ~Controller1();
+	private:
+	    std::string name;
+	    int response;
 
-    void processSignal(int signal);
-    void receiveFromController2(int signal);
-    int sendToController2();
-    void Print();
+	public:
+	    Controller1();
+	    ~Controller1();
 
-private:
-    std::string name;
+	    void processSignal(int signal);
+	    void receiveFromController2(int signal);
+	    int sendToController2();
+	    void Print();
 };
 
 #endif

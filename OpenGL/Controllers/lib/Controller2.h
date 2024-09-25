@@ -9,6 +9,7 @@
 class Controller2 {
 	private:
 		std::string name;
+		int response;
 
 	public:
 		Controller2();
