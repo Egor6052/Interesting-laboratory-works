@@ -1,12 +1,16 @@
 
 #include <iostream>
 #include "../lib/Controller1.h"
+#include "../lib/Controller2.h"
+#include "../lib/SensorPanel.h"
 
 int main(){
 
-	std::cout << "Hello World!" << std::endl;
+	Controller1 controller1;
+    Controller2 controller2;
+    SensorPanel panel;
 
-	Controller1 cont;
-	cont.Print();
+    // Симулюємо натискання кнопки на панелі
+    panel.pressButton(controller2, controller1);
 	return 0;
 }

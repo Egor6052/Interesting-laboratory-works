@@ -1,9 +1,10 @@
 #pragma once
-#ifndef CONTROLLER1_H
-#define CONTROLLER1_H
+#ifndef CONTROLLER2_H
+#define CONTROLLER2_H
 
 #include <iostream>
 #include <string>
+#include "Controller1.h"
 
 class Controller2 {
 	private:
@@ -12,6 +13,9 @@ class Controller2 {
 	public:
 		Controller2();
 		~Controller2();
+
+		void receiveFromPanel(const std::string& signal, Controller1& controller1);
+    	void sendToPanel(const std::string& signal);
 
 		void Print();
 };
