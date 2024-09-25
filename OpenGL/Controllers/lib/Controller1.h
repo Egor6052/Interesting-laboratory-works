@@ -1,27 +1,20 @@
-#pragma once
 #ifndef CONTROLLER1_H
 #define CONTROLLER1_H
 
-#include <iostream>
 #include <string>
 
 class Controller1 {
-	private:
-		std::string name;
+public:
+    Controller1();
+    ~Controller1();
 
-		 void processSignal(const std::string& signal);
+    void processSignal(int signal);
+    void receiveFromController2(int signal);
+    int sendToController2();
+    void Print();
 
-
-	public:
-		Controller1();
-		~Controller1();
-
-
-		void receiveFromController2(const std::string& signal);
-
-	    std::string sendToController2();
-
-		void Print();
+private:
+    std::string name;
 };
 
 #endif

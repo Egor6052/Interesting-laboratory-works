@@ -10,7 +10,6 @@ int main(){
     Controller2 controller2;
     SensorPanel panel;
 
-    // Симулюємо натискання кнопки на панелі
     panel.pressButton(controller2, controller1);
 	return 0;
 }

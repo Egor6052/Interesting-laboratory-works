@@ -10,6 +10,9 @@
 
 
 class SensorPanel {
+private:
+	int signal;
+
 public:
     void pressButton(Controller2& controller2, Controller1& controller1);
 

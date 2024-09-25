@@ -14,8 +14,8 @@ class Controller2 {
 		Controller2();
 		~Controller2();
 
-		void receiveFromPanel(const std::string& signal, Controller1& controller1);
-    	void sendToPanel(const std::string& signal);
+		void receiveFromPanel(int signal, Controller1& controller1);
+    	void sendToPanel(int signal);
 
 		void Print();
 };
