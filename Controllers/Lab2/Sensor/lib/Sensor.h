@@ -2,11 +2,12 @@
 #ifndef SENSOR_H
 #define SENSOR_H
 
+#include "Controller.h"
 #include <iostream>
 
 class Sensor {
 private:
-   float temperature;
+	float temperature;
 
 public:
 	Sensor();
@@ -15,7 +16,7 @@ public:
 	void setTemperature();
 	float getTemperature();
 
-	void sendToController();
+	void sendToController(Controller& controller);
 };
 
 #endif

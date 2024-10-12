@@ -2,16 +2,17 @@
 #include "../lib/Sensor.h"
 #include "../lib/Conection.h"
 
-Controller::Controller(){
+Controller::Controller() {
 	parameter = 0.0f;
 }
-	
-float Controller::getParameters(float valueParam){
-	parameter = valueParam;
-	return parameter;
+
+void Controller::setParameters(float valueParam) {
+	this->parameter = valueParam;
 }
-void Controller::PrintParam(){
-	std::cout << parameter;
+
+float Controller::getParameters() {
+	std::cout << "Parameter: " << parameter << std::endl;
+	return parameter;
 }
 
 void Controller::process() {

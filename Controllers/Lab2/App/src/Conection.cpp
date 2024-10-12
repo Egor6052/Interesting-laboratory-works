@@ -46,7 +46,7 @@ int Conection::receiveData() {
             continue;
         }
 
-        int temperature;
+        float temperature;
         recv(client_sock, &temperature, sizeof(temperature), 0);
 
         std::cout << "Отримана температура: " << temperature << " C" << std::endl;

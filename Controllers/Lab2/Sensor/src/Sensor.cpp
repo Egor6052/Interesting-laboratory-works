@@ -1,22 +1,22 @@
 #include "../lib/Sensor.h"
 #include "../lib/Controller.h"
-// #include <cstdlib>
 
 Sensor::Sensor() {
 	temperature = 0.0f;
 }
-Sensor::~Sensor(){ }
+Sensor::~Sensor() { }
 
 void Sensor::setTemperature() {
+	float temp;
 	std::cout << "t = ";
-	std::cin >> temperature;
+	std::cin >> temp;
+	this->temperature = temp;
 }
 
 float Sensor::getTemperature() {
 	return temperature;
 }
 
-void Sensor::sendToController(){
-	Controller controller;
-	controller.getParameters(getTemperature());
+void Sensor::sendToController(Controller& controller) {
+    controller.setParameters(getTemperature());
 }
