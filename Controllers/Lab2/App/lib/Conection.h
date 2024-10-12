@@ -3,10 +3,13 @@
 #define CONECTION_H
 
 class Conection {
-public:
-	
 private:
+	int server_sock;
+public:
+
+	Conection();
+	int receiveData();
 	
-}
+};
 
 #endif

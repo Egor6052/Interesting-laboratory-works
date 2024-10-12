@@ -12,6 +12,8 @@ public:
 	Controller();
 
 	float getParameters(float valueParam);
+	void PrintParam();
+
 	void process();
 };
 

@@ -3,7 +3,6 @@
 #define SENSOR_H
 
 #include <iostream>
-#include <string>
 
 class Sensor {
 private:
@@ -13,7 +12,7 @@ public:
 	Sensor();
 	~Sensor();
 
-	void setTemperature(float temperature);
+	void setTemperature();
 	float getTemperature();
 
 	void sendToController();

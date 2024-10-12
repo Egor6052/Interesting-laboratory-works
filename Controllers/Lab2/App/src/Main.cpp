@@ -1,4 +1,4 @@
-#include "Controller1.h"
+#include "../lib/Controller1.h"
 
 int main() {
     Controller1 controller;
