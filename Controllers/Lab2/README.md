@@ -1,29 +1,33 @@
 
-
-Для програми виводу отриманої температури:
-Компіляція:
+For the program to output the obtained temperature:
+Compilation:
 ```
 g++ -o Start ./*.cpp -lsfml-graphics -lsfml-window -lsfml-system
 ```
-Старт:
+Start:
 ```
 ./Start
 ```
 
-Для програми зчитування та передачі температури:
+For the temperature reading and transmission program:
 
-Компіляція:
+Compilation:
 ```
 g++ -o start ./*.cpp
 ```
-Стари:
+Old:
 ```
 ./Start
 ```
 
 
-Для екстреного приривання процесу, та звільнення порта:
+For emergency process termination and port release.
+Use the lsof command to find which process is occupying port 8080:
 
 ```
-
+lsof -i :8080
+```
+After obtaining the PID, you can kill the process using the kill command:
+```
+kill PID
 ```
