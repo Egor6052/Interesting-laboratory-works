@@ -11,7 +11,7 @@ void Panel::displayTemperature(float temperature, sf::RenderWindow& window, sf::
     text.setString("Температура: " + std::to_string(temperature) + " C");
     text.setCharacterSize(15);
     text.setFillColor(sf::Color::Black);
-    text.setPosition(50, 100); // Встановлюємо позицію тексту
+    text.setPosition(50, 50); // Встановлюємо позицію тексту
 
     // Рамка для тексту
     sf::FloatRect textBounds = text.getGlobalBounds();
@@ -19,8 +19,8 @@ void Panel::displayTemperature(float temperature, sf::RenderWindow& window, sf::
     frame.setFillColor(sf::Color::Transparent);
     frame.setOutlineColor(sf::Color::Black);
     frame.setOutlineThickness(2);
-    frame.setPosition(text.getPosition().x - 10, text.getPosition().y - 10); // Встановлюємо позицію рамки на основі тексту
-
+    frame.setPosition(text.getPosition().x - 10, text.getPosition().y - 10);
+    
     // Шкала температури
     float scaleWidth = 300;
     float scaleHeight = 20;
@@ -45,9 +45,9 @@ void Panel::displayTemperature(float temperature, sf::RenderWindow& window, sf::
     tempBar.setPosition(50, 200); // Позиція бару температури
 
     // Відображення всіх елементів
-    window.draw(scale);   // Малюємо шкалу
-    window.draw(tempBar); // Малюємо бар температури
-    window.draw(frame);   // Малюємо рамку
-    window.draw(text);    // Малюємо текст
-    window.display();      // Оновлюємо вікно
+    window.draw(scale);
+    window.draw(tempBar);
+    window.draw(frame);
+    window.draw(text);
+    window.display();
 }

@@ -8,7 +8,7 @@ private:
 public:
 
 	Conection();
-	int receiveData();
+	float receiveData();
 	
 };
 

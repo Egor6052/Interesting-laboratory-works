@@ -13,17 +13,14 @@ void Controller1::process() {
     Conection connection;
     Panel panel;
 
-    // Створюємо вікно SFML для відображення температури
     sf::RenderWindow window(sf::VideoMode(400, 300), "Моніторинг температури");
 
-    // Завантажуємо шрифт
     sf::Font font;
     if (!font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf")) {
         std::cerr << "Помилка при завантаженні шрифту\n";
         return;
     }
 
-    // Окремий потік для отримання даних про температуру
     std::thread dataThread([&]() {
         while (window.isOpen()) {
             temperature = connection.receiveData();
@@ -31,7 +28,6 @@ void Controller1::process() {
         }
     });
 
-    // Основний цикл SFML
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -39,11 +35,16 @@ void Controller1::process() {
                 window.close();
         }
 
-        // Виклик методу для відображення температури з трьома аргументами
+        // Відображення отриманих значень безпосередньо
+        // std::cout << "Температура для відображення: " << temperature << std::endl; // Вивід на консоль
         panel.displayTemperature(temperature, window, font);
+
+        // float testTemperature = 25;
+        // panel.displayTemperature(testTemperature, window, font);
+
     }
 
-    // Очікуємо завершення потоку з даними
+
     if (dataThread.joinable()) {
         dataThread.join();
     }
