@@ -22,7 +22,7 @@ void Panel::displayTemperature(float temperature, sf::RenderWindow& window, sf::
     scale.setPosition(50, 100);
     scale.setFillColor(sf::Color(80, 80, 80));
 
-    // Малюємо кольорову частину шкали
+    // Кольорова частина шкали
     float tempPercentage = temperature / maxTemperature; // Процентне співвідношення
     sf::RectangleShape tempBar(sf::Vector2f(scaleWidth * tempPercentage, scaleHeight));
 
@@ -38,19 +38,41 @@ void Panel::displayTemperature(float temperature, sf::RenderWindow& window, sf::
     tempBar.setFillColor(color);
     tempBar.setPosition(50, 100);
 
-    // // Відсоткове значення
-    // int percentage = static_cast<int>(tempPercentage * 100);
-    // sf::Text percentageText;
-    // percentageText.setFont(font);
-    // percentageText.setString(std::to_string(percentage) + "%");
-    // percentageText.setCharacterSize(20);
-    // percentageText.setFillColor(sf::Color::White);
-    // percentageText.setPosition(50 + scaleWidth + 10, 100);
+    // Лампочка
+    sf::CircleShape lamp(20);
+    lamp.setPosition(150, 220);
+    sf::Color lampColor = sf::Color::Transparent;
+    bool isLampOn = false;
+
+    // Кнопка
+    sf::RectangleShape button(sf::Vector2f(100, 40));
+    button.setPosition(100, 170);
+    button.setFillColor(sf::Color(100, 100, 100));
+    button.setOutlineColor(sf::Color::White);
+    button.setOutlineThickness(2);
+
+    // Обробка натиску миші
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+        sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+
+        if (button.getGlobalBounds().contains(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y))) {
+            isLampOn = !isLampOn;
+        }
+    }
+
+    // Встановлюємо колір лампочки в залежності від стану
+    if (isLampOn) {
+        lampColor = sf::Color::Yellow;
+    } else {
+        lampColor = sf::Color::Transparent;
+    }
+    lamp.setFillColor(lampColor);
 
     // Відображення всіх елементів
     window.draw(scale);
     window.draw(tempBar);
     window.draw(tempText);
-    // window.draw(percentageText);
+    window.draw(button);
+    window.draw(lamp);
     window.display();
 }

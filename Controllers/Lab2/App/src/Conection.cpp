@@ -9,14 +9,13 @@ Conection::Conection() {
 }
 
 float Conection::receiveData() {
-    // Створення серверного сокета лише один раз
+    // Створення серверного сокета
     server_sock = socket(AF_INET, SOCK_STREAM, 0);
     if (server_sock == -1) {
         std::cerr << "Помилка при створенні сокету" << std::endl;
         return -1;
     }
 
-    // Встановлення параметра SO_REUSEADDR та SO_REUSEPORT
     int opt = 1;
     if (setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
         std::cerr << "Помилка при встановленні опції SO_REUSEADDR" << std::endl;

@@ -3,7 +3,7 @@
 #include "../lib/Panel.h"
 #include <SFML/Graphics.hpp>
 #include <thread>
-#include <iostream>  // Додано для використання std::cerr
+#include <iostream>
 
 Controller1::Controller1() {
     temperature = 0;
