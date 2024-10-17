@@ -3,51 +3,54 @@
 #include <iostream>
 
 void Panel::displayTemperature(float temperature, sf::RenderWindow& window, sf::Font& font) {
-    window.clear(sf::Color::White); // Очищуємо вікно
+    window.clear(sf::Color(30, 30, 30));
 
     // Налаштування тексту температури
-    sf::Text text;
-    text.setFont(font);
-    text.setString("Температура: " + std::to_string(temperature) + " C");
-    text.setCharacterSize(15);
-    text.setFillColor(sf::Color::Black);
-    text.setPosition(50, 50); // Встановлюємо позицію тексту
+    sf::Text tempText;
+    tempText.setFont(font);
+    tempText.setString(std::to_string(static_cast<int>(temperature)) + " C");
+    tempText.setCharacterSize(30);
+    tempText.setFillColor(sf::Color::White);
+    tempText.setPosition(150, 30);
 
-    // Рамка для тексту
-    sf::FloatRect textBounds = text.getGlobalBounds();
-    sf::RectangleShape frame(sf::Vector2f(textBounds.width + 20, textBounds.height + 20));
-    frame.setFillColor(sf::Color::Transparent);
-    frame.setOutlineColor(sf::Color::Black);
-    frame.setOutlineThickness(2);
-    frame.setPosition(text.getPosition().x - 10, text.getPosition().y - 10);
-    
+    const float maxTemperature = 100.0f;
+
     // Шкала температури
     float scaleWidth = 300;
-    float scaleHeight = 20;
+    float scaleHeight = 30;
     sf::RectangleShape scale(sf::Vector2f(scaleWidth, scaleHeight));
-    scale.setPosition(50, 100); // Позиція шкали
-    scale.setFillColor(sf::Color(200, 200, 200)); // Світло-сіра шкала
-
-    // Розрахунок кольору залежно від температури
-    sf::Color color;
-    if (temperature < 20) {
-        color = sf::Color(0, 255, 0);
-    } else if (temperature < 30) {
-        int red = (temperature - 20) * 255 / 10;
-        color = sf::Color(red, 255 - red, 0);
-    } else {
-        color = sf::Color(255, 0, 0);
-    }
+    scale.setPosition(50, 100);
+    scale.setFillColor(sf::Color(80, 80, 80));
 
     // Малюємо кольорову частину шкали
-    sf::RectangleShape tempBar(sf::Vector2f((scaleWidth * temperature / 50), scaleHeight)); // Припустимо, максимум 50°C
+    float tempPercentage = temperature / maxTemperature; // Процентне співвідношення
+    sf::RectangleShape tempBar(sf::Vector2f(scaleWidth * tempPercentage, scaleHeight));
+
+    // Розрахунок кольору залежно від температури (градуювальна шкала)
+    sf::Color color;
+    if (temperature < 20) {
+        color = sf::Color(0, 150, 255);
+    } else if (temperature < 35) {
+        color = sf::Color(255, 180, 0);
+    } else {
+        color = sf::Color(255, 50, 50);
+    }
     tempBar.setFillColor(color);
-    tempBar.setPosition(50, 200); // Позиція бару температури
+    tempBar.setPosition(50, 100);
+
+    // // Відсоткове значення
+    // int percentage = static_cast<int>(tempPercentage * 100);
+    // sf::Text percentageText;
+    // percentageText.setFont(font);
+    // percentageText.setString(std::to_string(percentage) + "%");
+    // percentageText.setCharacterSize(20);
+    // percentageText.setFillColor(sf::Color::White);
+    // percentageText.setPosition(50 + scaleWidth + 10, 100);
 
     // Відображення всіх елементів
     window.draw(scale);
     window.draw(tempBar);
-    window.draw(frame);
-    window.draw(text);
+    window.draw(tempText);
+    // window.draw(percentageText);
     window.display();
 }

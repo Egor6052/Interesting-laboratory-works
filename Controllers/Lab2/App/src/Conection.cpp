@@ -9,23 +9,34 @@ Conection::Conection() {
 }
 
 float Conection::receiveData() {
+    // Створення серверного сокета лише один раз
     server_sock = socket(AF_INET, SOCK_STREAM, 0);
     if (server_sock == -1) {
         std::cerr << "Помилка при створенні сокету" << std::endl;
         return -1;
     }
 
+    // Встановлення параметра SO_REUSEADDR та SO_REUSEPORT
+    int opt = 1;
+    if (setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+        std::cerr << "Помилка при встановленні опції SO_REUSEADDR" << std::endl;
+        close(server_sock);
+        return -1;
+    }
+
+    #ifdef SO_REUSEPORT
+    if (setsockopt(server_sock, SOL_SOCKET, SO_REUSEPORT, &opt, sizeof(opt)) < 0) {
+        std::cerr << "Помилка при встановленні опції SO_REUSEPORT" << std::endl;
+        close(server_sock);
+        return -1;
+    }
+    #endif
+
+    // Налаштування адреси сервера
     sockaddr_in server;
     server.sin_family = AF_INET;
     server.sin_port = htons(8080);
     server.sin_addr.s_addr = INADDR_ANY;
-
-    int opt = 1;
-    if (setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
-        std::cerr << "Помилка при встановленні опції сокету" << std::endl;
-        close(server_sock);
-        return -1;
-    }
 
     if (bind(server_sock, (sockaddr*)&server, sizeof(server)) < 0) {
         std::cerr << "Помилка при прив'язці сокету" << std::endl;
@@ -33,6 +44,7 @@ float Conection::receiveData() {
         return -1;
     }
 
+    // Переключаємо сокет у режим прослуховування
     if (listen(server_sock, 1) < 0) {
         std::cerr << "Помилка при прослуховуванні сокету" << std::endl;
         close(server_sock);
@@ -41,6 +53,7 @@ float Conection::receiveData() {
 
     std::cout << "Очікування підключення..." << std::endl;
 
+    // Основний цикл для прийому клієнтів
     while (true) {
         sockaddr_in client;
         socklen_t clientSize = sizeof(client);
@@ -48,7 +61,7 @@ float Conection::receiveData() {
 
         if (client_sock == -1) {
             std::cerr << "Помилка при прийомі підключення" << std::endl;
-            continue; // Продовжуємо цикл, якщо не вдалось прийняти з'єднання
+            continue;
         }
 
         float temperature;
@@ -60,9 +73,9 @@ float Conection::receiveData() {
         }
 
         close(client_sock);
-        // return temperature; // тут ламається
+        return temperature;
     }
 
     close(server_sock);
-    return 0; // Код не дійде до цього рядка, але на всяк випадок
+    return 0;
 }
