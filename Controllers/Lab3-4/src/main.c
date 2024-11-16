@@ -2,14 +2,11 @@
 #include <util/delay.h>
 
 // Піни дисплея
-#define RST PC5
-#define DC  PC4
-#define CS  PB2
-#define MOSI PB3
-#define SCK PB5
-
-// Пін для мотора
-#define MOTOR_PIN PC0
+#define SCE  PB0  // Chip Enable (CS)
+#define RST  PB1  // Reset
+#define DC   PB2  // Data/Command
+#define SCLK PB5  // Clock
+#define MOSI PB3  // Data In (MOSI)
 
 // Команди дисплея
 #define LCD_COMMAND 0
@@ -17,105 +14,72 @@
 
 // Ініціалізація SPI
 void SPI_init(void) {
-    // MOSI, SCK, CS як виходи, SS як вихід (PB2)
-    DDRB |= (1 << MOSI) | (1 << SCK) | (1 << CS) | (1 << PB2);
-    SPCR = (1 << SPE) | (1 << MSTR) | (1 << SPR0); // SPI увімкнено, Master, частота знижена
+    DDRB |= (1 << MOSI) | (1 << SCLK) | (1 << SCE) | (1 << DC);  // Установити піни як виходи
+    SPCR = (1 << SPE) | (1 << MSTR) | (1 << SPR0); // SPI режим
 }
 
 // Відправка байта через SPI
 void SPI_send(uint8_t data) {
     SPDR = data;
-    while (!(SPSR & (1 << SPIF))); // Очікуємо завершення передачі
+    while (!(SPSR & (1 << SPIF)));  // Очікуємо завершення передачі
 }
 
 // Відправка команди або даних на дисплей
 void LCD_send(uint8_t data, uint8_t mode) {
     if (mode == LCD_COMMAND) {
-        PORTC &= ~(1 << DC);
+        PORTB &= ~(1 << DC);  // Встановлюємо режим команди
     } else {
-        PORTC |= (1 << DC);
+        PORTB |= (1 << DC);   // Встановлюємо режим даних
     }
-    PORTB &= ~(1 << CS);
+    PORTB &= ~(1 << SCE);  // Активуємо CS (SCE)
     SPI_send(data);
-    PORTB |= (1 << CS);
+    PORTB |= (1 << SCE);   // Деактивуємо CS (SCE)
 }
 
-// Ініціалізація дисплея Nokia 5110
+// Ініціалізація дисплея Nokia 1100
 void LCD_init(void) {
-    DDRC |= (1 << RST) | (1 << DC);
-    PORTC &= ~(1 << RST);
-    _delay_ms(10);
-    PORTC |= (1 << RST);
+    DDRB |= (1 << RST) | (1 << DC) | (1 << SCE);  // Піни як виходи
 
-    LCD_send(0x21, LCD_COMMAND);
-    LCD_send(0xB1, LCD_COMMAND);
-    LCD_send(0x04, LCD_COMMAND);
-    LCD_send(0x14, LCD_COMMAND);
-    LCD_send(0x20, LCD_COMMAND);
-    LCD_send(0x0C, LCD_COMMAND);
+    PORTB &= ~(1 << RST);   // Скидаємо дисплей
+    _delay_ms(10);
+    PORTB |= (1 << RST);    // Відновлюємо дисплей
+
+    LCD_send(0x21, LCD_COMMAND);  // Включення розширеного режиму
+    LCD_send(0xC0, LCD_COMMAND);  // Налаштування контрасту
+    LCD_send(0x04, LCD_COMMAND);  // Температурний коефіцієнт
+    LCD_send(0x14, LCD_COMMAND);  // Налаштування Vop
+    LCD_send(0x20, LCD_COMMAND);  // Вимкнення розширеного режиму
+    LCD_send(0x0C, LCD_COMMAND);  // Включення дисплея
 }
 
 // Очищення дисплея
 void LCD_clear(void) {
     for (uint16_t i = 0; i < 504; i++) {
-        LCD_send(0x00, LCD_DATA);
+        LCD_send(0x00, LCD_DATA);  // Відправка нулів для очищення
     }
 }
 
-// Встановлення курсора
-void LCD_setCursor(uint8_t x, uint8_t y) {
-    LCD_send(0x80 | x, LCD_COMMAND);
-    LCD_send(0x40 | y, LCD_COMMAND);
-}
-
-// Таблиця ASCII символів (частково, для прикладу)
-const uint8_t ASCII[][5] = {
-    {0x00, 0x00, 0x00, 0x00, 0x00},
-    {0x5F, 0x00, 0x5F, 0x00, 0x00},
-    {0x24, 0x7E, 0x24, 0x7E, 0x24},
-    {0x7C, 0x12, 0x11, 0x12, 0x7C},
-    {0x38, 0x54, 0x54, 0x54, 0x18},
-    {0x38, 0x54, 0x54, 0x54, 0x18},
-    {0x3C, 0x42, 0x42, 0x42, 0x3C},
-};
-
-
-void LCD_drawChar(char c) {
-    for (uint8_t i = 0; i < 5; i++) {
-        LCD_send(ASCII[c - ' '][i], LCD_DATA);
+// Заповнення екрану прямокутником
+void LCD_drawRect(void) {
+    for (uint8_t y = 0; y < 6; y++) {
+        LCD_send(0x80, LCD_COMMAND);  // Встановити курсор на перший стовпчик
+        LCD_send(0x40 | y, LCD_COMMAND);  // Встановити рядок
+        for (uint8_t x = 0; x < 84; x++) {
+            LCD_send(0xFF, LCD_DATA);  // Заповнити екран
+        }
     }
-    LCD_send(0x00, LCD_DATA);
-}
-
-void LCD_drawString(const char* str) {
-    while (*str) {
-        LCD_drawChar(*str++);
-    }
-}
-
-// Ініціалізація мотора
-void Motor_init(void) {
-    DDRC |= (1 << MOTOR_PIN);
-    PORTC &= ~(1 << MOTOR_PIN);
-}
-
-// Увімкнути/вимкнути мотор
-void Motor_toggle(void) {
-    PORTC ^= (1 << MOTOR_PIN);
 }
 
 // Основна функція
 int main(void) {
-    SPI_init();
-    LCD_init();
-    LCD_clear()
-    Motor_init();
-
-    LCD_setCursor(0, 0);
-    LCD_drawString("HELLO");
+    SPI_init();  // Ініціалізація SPI
+    LCD_init();  // Ініціалізація дисплея
+    LCD_clear(); // Очищення дисплея
 
     while (1) {
-        Motor_toggle();
-        _delay_ms(1000);
+        LCD_drawRect();  // Виведення прямокутника
+        _delay_ms(1000); // Затримка 1 секунда
+        LCD_clear();     // Очистити дисплей
+        _delay_ms(1000); // Затримка 1 секунда
     }
 }
